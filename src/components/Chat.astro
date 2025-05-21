@@ -1,0 +1,71 @@
+<div class="bg-base-200 flex h-full w-full flex-col rounded-lg">
+    <div class="border-base-300 border-b p-4">
+        <h2 class="font-bold text-2xl">Chat</h2>
+    </div>
+
+    <div
+        id="chat-messages"
+        class="max-h-[60vh] flex-1 space-y-4 overflow-y-scroll p-4"
+    >
+        <!-- Messages will be inserted here -->
+    </div>
+
+    <div class="border-base-300 border-t p-4">
+        <form id="chat-form" class="flex gap-2">
+            <input
+                type="text"
+                id="message-input"
+                placeholder="Type your message..."
+                class="input input-bordered flex-1 text-black"
+            />
+            <button type="submit" class="btn btn-primary"> Send </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    import { sendMessage } from "../api/chat";
+    const chatForm = document.getElementById("chat-form") as HTMLFormElement;
+    const messageInput = document.getElementById(
+        "message-input",
+    ) as HTMLInputElement;
+    const chatMessages = document.getElementById("chat-messages");
+
+    function addMessage(content: string, isUser: boolean) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `flex ${isUser ? "justify-end" : "justify-start"}`;
+
+        const messageBubble = document.createElement("div");
+        messageBubble.className = `max-w-[70%] p-1 rounded-lg ${
+            isUser ? "bg-primary text-primary-content" : "bg-base-300"
+        }`;
+        messageBubble.textContent = content;
+
+        messageDiv.appendChild(messageBubble);
+        chatMessages?.appendChild(messageDiv);
+        chatMessages?.scrollTo(0, chatMessages.scrollHeight);
+    }
+
+    chatForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        // Add user message to chat
+        addMessage(message, true);
+        messageInput.value = "";
+
+        try {
+            const response = await sendMessage(message);
+            // Add bot response to chat
+            addMessage(response, false);
+        } catch (error) {
+            console.error("Chat error:", error);
+            addMessage(
+                "Sorry, there was an error processing your message.",
+                false,
+            );
+        }
+    });
+</script>

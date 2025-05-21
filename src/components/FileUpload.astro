@@ -1,0 +1,51 @@
+<div class="bg-base-200 h-full w-full rounded-lg p-4">
+    <div class="flex flex-col gap-4">
+        <h2 class="font-bold text-2xl">Upload Transactions</h2>
+        <div class="flex flex-col gap-2">
+            <label class="btn btn-primary w-full" for="file-upload">
+                Choose XLSX File
+            </label>
+            <input id="file-upload" type="file" accept=".xlsx" class="hidden" />
+            <div id="file-name" class="text-gray-500 text-sm"></div>
+        </div>
+        <button id="upload-button" class="btn btn-secondary w-full" disabled>
+            Upload File
+        </button>
+    </div>
+</div>
+
+<script>
+    import { uploadFile } from "~/api/upload";
+    const fileInput = document.getElementById(
+        "file-upload",
+    ) as HTMLInputElement;
+    const fileName = document.getElementById("file-name");
+    const uploadButton = document.getElementById(
+        "upload-button",
+    ) as HTMLButtonElement;
+
+    fileInput?.addEventListener("change", (e) => {
+        const target = e.target as HTMLInputElement;
+        if (target.files && target.files[0]) {
+            fileName!.textContent = target.files[0].name;
+            uploadButton!.disabled = false;
+        } else {
+            fileName!.textContent = "";
+            uploadButton!.disabled = true;
+        }
+    });
+
+    uploadButton?.addEventListener("click", async () => {
+        if (!fileInput?.files?.length) return;
+
+        try {
+            await uploadFile(fileInput.files[0]);
+            alert("File uploaded successfully!");
+            fileName!.textContent = "";
+            fileInput.value = "";
+            uploadButton.disabled = true;
+        } catch (error) {
+            alert("Error uploading file. Please try again.");
+        }
+    });
+</script>

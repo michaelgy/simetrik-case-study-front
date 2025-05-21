@@ -4,7 +4,7 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://simetrik-agent.mgy.one.com/",
+  site: "https://simetrik-agent.mgy.one/",
   integrations: [tailwind(), icon()],
   optimizeDeps: {
     include: ["firebase/app", "firebase/analytics"],
