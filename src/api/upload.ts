@@ -1,9 +1,11 @@
-export async function uploadFile(file: File): Promise<boolean> {
+import { API_BASE_URL } from '~/constants';
+
+export async function uploadFile(file: File): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-        const response = await fetch('/api/upload', {
+        const response = await fetch(`${API_BASE_URL}/file_processor_api`, {
             method: 'POST',
             body: formData,
         });
@@ -12,7 +14,8 @@ export async function uploadFile(file: File): Promise<boolean> {
             throw new Error('Upload failed');
         }
 
-        return true;
+        const x = await response.json();
+        return JSON.stringify(x);
     } catch (error) {
         console.error('Upload error:', error);
         throw error;

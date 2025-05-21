@@ -39,8 +39,8 @@
         if (!fileInput?.files?.length) return;
 
         try {
-            await uploadFile(fileInput.files[0]);
-            alert("File uploaded successfully!");
+            const result = await uploadFile(fileInput.files[0]);
+            alert("File uploaded successfully!\n" + result);
             fileName!.textContent = "";
             fileInput.value = "";
             uploadButton.disabled = true;
